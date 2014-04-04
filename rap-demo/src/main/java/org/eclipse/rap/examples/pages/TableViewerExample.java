@@ -12,7 +12,9 @@ package org.eclipse.rap.examples.pages;
 
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.jface.viewers.CellLabelProvider;
 import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
@@ -31,6 +33,7 @@ import org.eclipse.rap.examples.IExamplePage;
 import org.eclipse.rap.examples.pages.Elements.Element;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.TableEditor;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.ModifyEvent;
@@ -41,11 +44,13 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
+import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
 
 public class TableViewerExample implements IExamplePage {
@@ -56,6 +61,7 @@ public class TableViewerExample implements IExamplePage {
   private static final int SERIES = 3;
   private static final int GROUP = 4;
   private static final int PERIOD = 5;
+  private static final int BUTTON = 6;
 
   private TableViewer viewer;
   private Label lblSelection;
@@ -70,6 +76,7 @@ public class TableViewerExample implements IExamplePage {
   private TableViewerColumn seriesColumn;
   private TableViewerColumn groupColumn;
   private TableViewerColumn periodColumn;
+  private TableViewerColumn buttonColumn;
 
   private static Color[] seriesColors;
 
@@ -148,6 +155,7 @@ public class TableViewerExample implements IExamplePage {
     seriesColumn = createColumn( "Series", 180, SERIES );
     groupColumn = createColumn( "Group", 50, GROUP );
     periodColumn = createColumn( "Period", 50, PERIOD );
+    buttonColumn = createColumn( "Button", 50, BUTTON );
     viewer.setInput( elements );
     viewer.addFilter( viewerFilter );
     viewer.addSelectionChangedListener( new ISelectionChangedListener() {
@@ -317,7 +325,7 @@ public class TableViewerExample implements IExamplePage {
   private static final class ElementsLabelProvider extends CellLabelProvider {
     @Override
     public void update( ViewerCell cell ) {
-      Element element = ( Element )cell.getElement();
+      final Element element = ( Element )cell.getElement();
       int columnIndex = cell.getColumnIndex();
       switch( columnIndex ) {
         case NUMBER:
@@ -339,6 +347,38 @@ public class TableViewerExample implements IExamplePage {
           cell.setText( element.getSeriesName() );
           cell.setBackground( seriesColors[ element.series ] );
           break;
+        case BUTTON:{
+            Map<Object, Button> buttons = new HashMap<Object, Button>();   
+            TableItem item = (TableItem) cell.getItem();
+            Button button;
+       
+            if(buttons.containsKey(cell.getElement())) {
+                button = buttons.get(cell.getElement());
+            } else {
+                button = new Button((Composite) cell.getViewerRow().getControl(),SWT.PUSH);
+                button.setText("!");
+                buttons.put(cell.getElement(), button);
+            }
+            TableEditor editor = new TableEditor(item.getParent());
+            editor.grabHorizontal  = true;
+            editor.grabVertical = true;
+            editor.setEditor(button , item, cell.getColumnIndex());
+            button.addSelectionListener(new SelectionAdapter() {
+
+				@Override
+				public void widgetDefaultSelected(SelectionEvent e) {
+					System.out.println(String.format("widgetDefaultSelected on %s", element.name));
+				}
+
+				@Override
+				public void widgetSelected(SelectionEvent e) {
+					System.out.println(String.format("widgetDefaultSelected on %s", element.name));
+				}
+            	
+			});
+            editor.layout();
+            break;
+        }
       }
     }
 
