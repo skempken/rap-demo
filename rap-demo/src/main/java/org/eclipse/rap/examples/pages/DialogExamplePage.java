@@ -245,7 +245,12 @@ public class DialogExamplePage implements IExamplePage {
   // Custom
 
   private void createCustomDialogs( Composite parent ) {
-    Button button = new Button( parent, SWT.PUSH );
+    createLoginDialog(parent);
+    createDivisionedDialog(parent);
+  }
+
+  private void createLoginDialog(Composite parent) {
+	Button button = new Button( parent, SWT.PUSH );
     button.setText( "Login Dialog" );
     button.addSelectionListener( new SelectionAdapter() {
       @Override
@@ -254,7 +259,29 @@ public class DialogExamplePage implements IExamplePage {
       }
     } );
     button.setLayoutData( createButtonGridData() );
-  }
+}
+  
+  private void createDivisionedDialog(Composite parent) {
+		Button button = new Button( parent, SWT.PUSH );
+	    button.setText( "Divisioned Dialog" );
+	    button.addSelectionListener( new SelectionAdapter() {
+	      @Override
+	      public void widgetSelected( SelectionEvent event ) {
+	    	  showDivisonedDialog();
+	      }
+
+		
+	    } );
+	    button.setLayoutData( createButtonGridData() );
+	}
+  
+  
+  private void showDivisonedDialog() {
+		final DivisionedDialog dialog = new DivisionedDialog(getShell(), "Divisioned Dialog");
+		
+		dialog.setBlockOnOpen( false );
+		dialog.open();
+	}
 
   private void showInputDialog() {
     final IInputValidator val = new IInputValidator() {
