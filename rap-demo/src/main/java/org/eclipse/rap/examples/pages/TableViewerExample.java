@@ -16,6 +16,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.swing.JDialog;
+
 import org.eclipse.jface.viewers.CellLabelProvider;
 import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -32,6 +34,7 @@ import org.eclipse.rap.examples.ExampleUtil;
 import org.eclipse.rap.examples.IExamplePage;
 import org.eclipse.rap.examples.pages.Elements.Element;
 import org.eclipse.rap.rwt.RWT;
+import org.eclipse.rap.rwt.widgets.DialogCallback;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.TableEditor;
 import org.eclipse.swt.events.KeyAdapter;
@@ -48,6 +51,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
@@ -367,12 +371,24 @@ public class TableViewerExample implements IExamplePage {
 
 				@Override
 				public void widgetDefaultSelected(SelectionEvent e) {
-					System.out.println(String.format("widgetDefaultSelected on %s", element.name));
+					MessageDialogUtil.openInformation( getShell(), "Element button clicked", element.name, new DialogCallback() {
+						
+						public void dialogClosed(int arg0) {
+							// TODO Auto-generated method stub
+							
+						}
+					});
 				}
 
 				@Override
 				public void widgetSelected(SelectionEvent e) {
-					System.out.println(String.format("widgetDefaultSelected on %s", element.name));
+					MessageDialogUtil.openInformation( getShell(), "Element button clicked", element.name, new DialogCallback() {
+						
+						public void dialogClosed(int arg0) {
+							// TODO Auto-generated method stub
+							
+						}
+					});
 				}
             	
 			});
@@ -382,6 +398,10 @@ public class TableViewerExample implements IExamplePage {
       }
     }
 
+    private Shell getShell() {
+        return Display.getCurrent().getActiveShell();
+      }
+    
     @Override
     public String getToolTipText( Object object ) {
       Element element = ( Element )object;
